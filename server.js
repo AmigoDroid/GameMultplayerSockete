@@ -42,4 +42,4 @@ soket.on('connection',(item)=>{
    
 
 
-server.listen(porta || 3000);
+server.listen(porta || 8787);
