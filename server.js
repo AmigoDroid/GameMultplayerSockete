@@ -7,6 +7,7 @@ import createGame from './public/game.js';
 const app = express();
 const server = http.createServer(app);
 const soket = new Server(server); 
+const porta = process.env.PORT;
 
 app.use(express.static('public'));
 
@@ -41,4 +42,4 @@ soket.on('connection',(item)=>{
    
 
 
-server.listen(3000);
+server.listen(porta || 3000);
