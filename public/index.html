@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SOCKET IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- ESTILO -->
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            flex: 1;
+        }
+        #canvas{
+            border: 10px solid #ccc;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+
+    <title>Game</title>
+</head>
+<body>
+    <h1>Game Online</h1>
+    <canvas id="canvas" width="20" height="20"></canvas>
+    <script type="module">
+        import createGame from './game.js';
+        import createKeyBordListenir from './keybordlistenir.js';
+        import renderPlayers from './renderscreen.js';
+      
+        const game = createGame();
+        const canvas = document.querySelector('canvas')
+     
+    
+       
+        const keyBordListenir = createKeyBordListenir(document);
+        keyBordListenir.subscribe(game.movePlayer);
+
+        const soket = io();
+
+        soket.on('connect',()=>{
+            const playerId = soket.id;
+            renderPlayers(canvas,game,requestAnimationFrame,playerId);
+            keyBordListenir.setPlayerId(playerId);
+            keyBordListenir.subscribe((item)=>{
+                soket.emit('move-player',item);
+            });
+            
+        })
+        soket.on('states',(command)=>{
+            game.setState(command)
+        });
+        soket.on('add-player',(command)=>{
+            game.addPlayer(command)
+
+        });
+        soket.on('remove-player',(command)=>{
+           game.removerPlayer(command)
+        });
+
+        soket.on('mover-player',(command)=>{
+            const playerId = soket.id;
+            
+            if(playerId !== command.playerId){
+                game.movePlayer(command);
+                console.log("movendo: "+command.playerId)
+            }
+        })
+    </script>
+</body>
+</html>
