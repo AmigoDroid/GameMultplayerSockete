@@ -19,7 +19,6 @@ soket.on('connection',(item)=>{
     console.log("Jogador: "+item.id+' conectado');
     const playerId = item.id;
     item.emit('states',game.states)
-   
     game.addPlayer({playerId:playerId});
 
     game.subscribe((command)=>{
@@ -36,7 +35,17 @@ soket.on('connection',(item)=>{
         soket.emit('mover-player',command)
     })
    
+    setInterval(adFruta,10000);
 
+    function adFruta(){
+        const command = {
+            frutId:''+Math.random(),
+        }
+
+        game.addFrut(command);
+        console.table(command);
+        item.emit('Fruts',game.states);
+    }
 });
 
    

@@ -47,6 +47,8 @@
         const soket = io();
 
         soket.on('connect',()=>{
+          
+            console.log(game.states);
             const playerId = soket.id;
             renderPlayers(canvas,game,requestAnimationFrame,playerId);
             keyBordListenir.setPlayerId(playerId);
@@ -58,6 +60,9 @@
         soket.on('states',(command)=>{
             game.setState(command)
         });
+        soket.on('add-Frut',(frutas)=>{
+          game.addFrut(frutas);
+        })
         soket.on('add-player',(command)=>{
             game.addPlayer(command)
 
